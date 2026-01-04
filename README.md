@@ -13,8 +13,11 @@ REST
 Запуск:
 1. 
 
-docker compose build --no-cache
-docker compose up
+
+<pre> ```bash docker compose build --no-cache ``` </pre>
+
+
+<pre> ```bash docker compose up ``` </pre>
 -----------------------------------------------------
 
 
