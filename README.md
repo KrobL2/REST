@@ -10,6 +10,19 @@ REST
 7. 
 -----------------------------------------------------
 
+Запуск:
+1. 
+
+docker compose build --no-cache
+docker compose up
+-----------------------------------------------------
+
+
+Проверка:
+
+docker compose logs -f api
+curl http://localhost:8080/api/v1/users
+
 
 Что дальше (следующие шаги):
 
