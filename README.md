@@ -17,7 +17,7 @@ REST
 <pre> ```bash docker compose build --no-cache ``` </pre>
 
 
-<pre> ```bash docker compose up ``` </pre>
+<pre> ```docker compose up ``` </pre>
 -----------------------------------------------------
 
 
