@@ -21,6 +21,7 @@ func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to fetch users", http.StatusInternalServerError)
 		return
 	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 }
