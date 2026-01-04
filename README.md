@@ -20,13 +20,10 @@ docker compose up
 
 Проверка:
 
-docker compose logs -f api
 curl http://localhost:8080/api/v1/users
 
 
 Что дальше (следующие шаги):
-
-1. Добавить миграции (golang-migrate)
 
 2. Context timeouts
 

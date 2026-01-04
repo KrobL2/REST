@@ -18,8 +18,9 @@ import (
 	"github.com/pressly/goose/v3"
 
 	"go-rest-server/internal/config"
-	"go-rest-server/internal/handler"
 	"go-rest-server/internal/repository"
+	"go-rest-server/internal/service"
+	"go-rest-server/internal/transport/handler"
 )
 
 func main() {
@@ -63,7 +64,8 @@ func main() {
 
 	// --- Репозитории и хендлеры ---
 	userRepo := repository.NewUserRepository(db)
-	userHandler := handler.NewUserHandler(userRepo)
+	userService := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userService)
 
 	// --- HTTP роутер ---
 	r := chi.NewRouter()

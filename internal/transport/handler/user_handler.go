@@ -4,24 +4,23 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"go-rest-server/internal/repository"
+	"go-rest-server/internal/service"
 )
 
 type UserHandler struct {
-	repo *repository.UserRepository
+	service *service.UserService
 }
 
-func NewUserHandler(repo *repository.UserRepository) *UserHandler {
-	return &UserHandler{repo: repo}
+func NewUserHandler(service *service.UserService) *UserHandler {
+	return &UserHandler{service: service}
 }
 
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := h.repo.GetAll(r.Context())
+	users, err := h.service.ListUsers()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, "failed to fetch users", http.StatusInternalServerError)
 		return
 	}
-
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 }
