@@ -5,9 +5,11 @@ CREATE TABLE users (
     email TEXT NOT NULL UNIQUE
 );
 
-INSERT INTO users (name, email) VALUES
-('Alice', 'alice@example.com'),
-('Bob', 'bob@example.com');
+INSERT INTO
+    users (name, email)
+VALUES
+    ('Alice', 'alice@example.com'),
+    ('Bob', 'bob@example.com');
 
 -- +goose Down
 DROP TABLE users;
