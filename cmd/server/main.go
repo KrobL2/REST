@@ -41,16 +41,20 @@ func main() {
 		if err == nil {
 			err = db.Ping()
 		}
+
 		if err == nil {
 			break
 		}
+
 		slog.Warn("Postgres не готов, повторная попытка...", "attempt", i+1, "error", err)
 		time.Sleep(2 * time.Second)
 	}
+
 	if err != nil {
 		slog.Error("Не удалось подключиться к Postgres", "error", err)
 		os.Exit(1)
 	}
+
 	defer db.Close()
 	slog.Info("Подключение к Postgres успешно")
 
@@ -60,6 +64,7 @@ func main() {
 		slog.Error("Ошибка при применении миграций", "error", err)
 		os.Exit(1)
 	}
+
 	slog.Info("Миграции успешно применены")
 
 	// --- Репозитории и хендлеры ---
@@ -69,6 +74,7 @@ func main() {
 
 	// --- HTTP роутер ---
 	r := chi.NewRouter()
+
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
@@ -91,6 +97,7 @@ func main() {
 
 	go func() {
 		slog.Info("Сервер запущен", "port", 8080)
+
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			slog.Error("ListenAndServe ошибка", "error", err)
 			os.Exit(1)
@@ -102,6 +109,7 @@ func main() {
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
+
 	if err := srv.Shutdown(shutdownCtx); err != nil {
 		slog.Error("Ошибка при shutdown", "error", err)
 	} else {
