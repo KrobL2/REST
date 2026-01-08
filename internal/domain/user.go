@@ -9,5 +9,5 @@ type User struct {
 // Интерфейс репозитория
 type UserRepository interface {
 	GetAll() ([]User, error)
-	Create(user User) (int, error)
+	Create(user User) (User, error)
 }

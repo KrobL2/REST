@@ -40,6 +40,14 @@ docker compose up
 curl http://localhost:8080/api/v1/users
 ```
 
+Добавить пользователя
+
+```bash
+curl -X POST http://localhost:8080/api/v1/users -H "Content-Type: application/json" -d '{"name": "Max", "email": "max@example.com"}'
+```
+
+
+
 
 ## 📂 Структура проекта
 

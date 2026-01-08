@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"go-rest-server/internal/domain"
 )
 
@@ -34,16 +35,16 @@ func (r *PostgresUserRepo) GetAll() ([]domain.User, error) {
 		users = append(users, u)
 	}
 
+	fmt.Print(users)
+
 	return users, nil
 }
 
-func (r *PostgresUserRepo) Create(user domain.User) (int, error) {
-	var id int
-
-	err := r.db.QueryRow("INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id", user.Name, user.Email).Scan(&id)
+func (r *PostgresUserRepo) Create(user domain.User) (domain.User, error) {
+	err := r.db.QueryRow("INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id", user.Name, user.Email).Scan(&user.ID)
 	if err != nil {
-		return 0, err
+		return domain.User{}, err
 	}
 
-	return id, nil
+	return user, nil
 }

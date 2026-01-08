@@ -9,9 +9,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"
 
@@ -19,7 +16,8 @@ import (
 	"go-rest-server/internal/repository"
 	"go-rest-server/internal/service"
 	"go-rest-server/internal/storage/postgres"
-	"go-rest-server/internal/transport/handler"
+	httphandler "go-rest-server/internal/transport/http"
+	handler "go-rest-server/internal/transport/http/handlers"
 )
 
 const (
@@ -50,20 +48,13 @@ func main() {
 
 	log.Info("Миграции успешно применены")
 
-	// --- Репозитории и хендлеры ---
+	// Репозитории и сервисы
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
 
-	// --- HTTP роутер ---
-	r := chi.NewRouter()
-
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-
-	r.Route("/api/v1", func(r chi.Router) {
-		r.Get("/users", userHandler.GetUsers)
-	})
+	// Роутер
+	r := httphandler.NewRouter(userHandler)
 
 	// --- HTTP сервер с таймаутами ---
 	srv := &http.Server{
