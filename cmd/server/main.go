@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -20,6 +18,7 @@ import (
 	"go-rest-server/internal/config"
 	"go-rest-server/internal/repository"
 	"go-rest-server/internal/service"
+	"go-rest-server/internal/storage/postgres"
 	"go-rest-server/internal/transport/handler"
 )
 
@@ -32,35 +31,13 @@ const (
 func main() {
 	// Конфигурация
 	cfg := config.Load()
-	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
 
 	// Логи
 	log := setupLogger(cfg.DBHost)
 
-	// Подключение к БД с retry ---
-	var db *sql.DB
-	var err error
-	for i := 0; i < 10; i++ {
-		db, err = sql.Open("postgres", dsn)
-		if err == nil {
-			err = db.Ping()
-		}
-
-		if err == nil {
-			break
-		}
-
-		log.Warn("Postgres не готов, повторная попытка...", "attempt", i+1, "error", err)
-		time.Sleep(2 * time.Second)
-	}
-
-	if err != nil {
-		log.Error("Не удалось подключиться к Postgres", "error", err)
-		os.Exit(1)
-	}
+	db := postgres.ConnectWithRetry(cfg, log)
 
 	defer db.Close()
-
 	log.Info("Подключение к Postgres успешно")
 
 	// --- Применяем миграции Goose ---
