@@ -3,11 +3,14 @@ REST
 Что используется:
 1. Golang
 2. Chi
-3. Postgres
-4. Docker
 5. Goose
 6. Slog
+
+3. Postgres
+4. Docker
 7. 
+
+
 -----------------------------------------------------
 
 Запуск:
