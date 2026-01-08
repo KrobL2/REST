@@ -35,6 +35,7 @@ func main() {
 	// Логи
 	log := setupLogger(cfg.DBHost)
 
+	// База данных
 	db := postgres.ConnectWithRetry(cfg, log)
 
 	defer db.Close()
