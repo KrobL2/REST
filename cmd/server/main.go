@@ -60,6 +60,7 @@ func main() {
 	}
 
 	defer db.Close()
+
 	log.Info("Подключение к Postgres успешно")
 
 	// --- Применяем миграции Goose ---
@@ -128,13 +129,13 @@ func setupLogger(env string) *slog.Logger {
 	case envLocal:
 		handler := slog.NewTextHandler(os.Stderr, nil)
 		log = slog.New(handler)
-	case envDev:
-	case envProd:
+	case envDev, envProd:
 		handler := slog.NewJSONHandler(os.Stdout, nil)
 		log = slog.New(handler)
+	default:
+		handler := slog.NewTextHandler(os.Stderr, nil)
+		log = slog.New(handler)
 	}
-
-	slog.SetDefault(log)
 
 	return log
 }

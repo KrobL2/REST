@@ -12,28 +12,27 @@ REST
 7. Docker 
 
 -----------------------------------------------------
-
-Запуск:
-1. 
-
+Билд:
 
 <pre> ```bash docker compose build --no-cache ``` </pre>
 
 
+Запуск:
+
 <pre> ```docker compose up ``` </pre>
 -----------------------------------------------------
-
 
 Проверка:
 
 curl http://localhost:8080/api/v1/users
 
 
+
+------------------------------------------------------------
+
 Что дальше (следующие шаги):
 
 2. Context timeouts
-
-3. Structured logging (zap / slog)
 
 4. Graceful shutdown
 
