@@ -1,4 +1,4 @@
-package db
+package postgres
 
 import (
 	"database/sql"
@@ -8,6 +8,7 @@ import (
 
 func NewPostgres(dsn string) (*sql.DB, error) {
 	db, err := sql.Open("pgx", dsn)
+
 	if err != nil {
 		return nil, err
 	}
