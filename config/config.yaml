@@ -1,1 +1,6 @@
 env: "local"
+
+http_server:
+  read_timeout: 5s
+  Write_timeout: 10s
+  idle_timeout: 60s
