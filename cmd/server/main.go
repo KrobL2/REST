@@ -23,16 +23,21 @@ import (
 	"go-rest-server/internal/transport/handler"
 )
 
-func main() {
-	// --- Логи ---
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	slog.SetDefault(logger)
+const (
+	envLocal = "local"
+	envDev   = "dev"
+	envProd  = "prod"
+)
 
-	// --- Конфигурация ---
+func main() {
+	// Конфигурация
 	cfg := config.Load()
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName)
 
-	// --- Подключение к БД с retry ---
+	// Логи
+	log := setupLogger(cfg.DBHost)
+
+	// Подключение к БД с retry ---
 	var db *sql.DB
 	var err error
 	for i := 0; i < 10; i++ {
@@ -45,26 +50,26 @@ func main() {
 			break
 		}
 
-		slog.Warn("Postgres не готов, повторная попытка...", "attempt", i+1, "error", err)
+		log.Warn("Postgres не готов, повторная попытка...", "attempt", i+1, "error", err)
 		time.Sleep(2 * time.Second)
 	}
 
 	if err != nil {
-		slog.Error("Не удалось подключиться к Postgres", "error", err)
+		log.Error("Не удалось подключиться к Postgres", "error", err)
 		os.Exit(1)
 	}
 
 	defer db.Close()
-	slog.Info("Подключение к Postgres успешно")
+	log.Info("Подключение к Postgres успешно")
 
 	// --- Применяем миграции Goose ---
-	slog.Info("Применяем миграции...")
+	log.Info("Применяем миграции...")
 	if err := goose.Up(db, "./migrations"); err != nil {
-		slog.Error("Ошибка при применении миграций", "error", err)
+		log.Error("Ошибка при применении миграций", "error", err)
 		os.Exit(1)
 	}
 
-	slog.Info("Миграции успешно применены")
+	log.Info("Миграции успешно применены")
 
 	// --- Репозитории и хендлеры ---
 	userRepo := repository.NewUserRepository(db)
@@ -95,23 +100,41 @@ func main() {
 	defer stop()
 
 	go func() {
-		slog.Info("Сервер запущен", "port", 8080)
+		log.Info("Сервер запущен", "port", 8080)
 
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			slog.Error("ListenAndServe ошибка", "error", err)
+			log.Error("ListenAndServe ошибка", "error", err)
 			os.Exit(1)
 		}
 	}()
 
 	<-ctx.Done()
-	slog.Info("Shutting down...")
+	log.Info("Shutting down...")
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	if err := srv.Shutdown(shutdownCtx); err != nil {
-		slog.Error("Ошибка при shutdown", "error", err)
+		log.Error("Ошибка при shutdown", "error", err)
 	} else {
-		slog.Info("Сервер остановлен корректно")
+		log.Info("Сервер остановлен корректно")
 	}
+}
+
+func setupLogger(env string) *slog.Logger {
+	var log *slog.Logger
+
+	switch env {
+	case envLocal:
+		handler := slog.NewTextHandler(os.Stderr, nil)
+		log = slog.New(handler)
+	case envDev:
+	case envProd:
+		handler := slog.NewJSONHandler(os.Stdout, nil)
+		log = slog.New(handler)
+	}
+
+	slog.SetDefault(log)
+
+	return log
 }
