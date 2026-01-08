@@ -34,7 +34,7 @@ docker compose up
 
 Проверка:
 
-После запуска сервиса, проверить endpoint:
+После запуска сервиса, проверить endpoint
 
 ```bash
 curl http://localhost:8080/api/v1/users
@@ -43,20 +43,22 @@ curl http://localhost:8080/api/v1/users
 
 ## 📂 Структура проекта
 
+```text
 .
-├── cmd/server        # Точка входа приложения
+├── cmd/server              # Точка входа приложения
 ├── internal/
-│   ├── config        # Конфигурация приложения
-│   ├── domain        # Доменные модели
-│   ├── repository    # Репозитории работы с БД
-│   ├── service       # Сервисный слой (бизнес-логика)
-│   ├── transport     # HTTP хендлеры и маршруты
-│   └── storage       # Инициализация БД и миграции
-├── migrations/       # SQL миграции Goose
+│   ├── config              # Конфигурация приложения
+│   ├── domain              # Доменные модели
+│   ├── repository          # Репозитории работы с БД
+│   ├── service             # Сервисный слой (бизнес-логика)
+│   ├── transport           # HTTP хендлеры и маршруты
+│   │   └── http            # HTTP handlers
+│   └── storage             # Инициализация БД и миграции
+├── migrations/             # SQL миграции Goose
 ├── Dockerfile
 ├── docker-compose.yml
 └── .env
-
+```
 
 ------------------------------------------------------------
 
