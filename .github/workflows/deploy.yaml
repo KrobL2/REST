@@ -9,20 +9,21 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    permissions:
+      pages: write
+      id-token: write
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Шаг настройки GitHub Pages
-      - name: Configure Pages
-        uses: actions/configure-pages@v3
-
-      # Шаг загрузки артефактов
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v1
+      - name: Setup Node (для Swagger UI, если нужен локальный билд)
+        uses: actions/setup-node@v3
         with:
-          path: docs # папка с openapi.yaml и index.html
+          node-version: "20"
 
-      # Шаг деплоя
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
+      - name: Publish Swagger UI to GitHub Pages
+        uses: github/pages-deploy-action@v1
+        with:
+          branch: gh-pages # ветка для Pages
+          folder: docs # папка с openapi.yaml + index.html
