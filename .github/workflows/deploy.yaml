@@ -3,21 +3,26 @@ name: Deploy Swagger UI to GitHub Pages
 on:
   push:
     branches:
-      - main # или ваша основная ветка
+      - main # ваша основная ветка
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Setup Pages
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # Шаг настройки GitHub Pages
+      - name: Configure Pages
         uses: actions/configure-pages@v3
 
-      - name: Upload Docs
+      # Шаг загрузки артефактов
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: docs
+          path: docs # папка с openapi.yaml и index.html
 
-      - name: Deploy Pages
+      # Шаг деплоя
+      - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v1
