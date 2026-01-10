@@ -70,6 +70,16 @@ curl -X POST http://localhost:8080/api/v1/users -H "Content-Type: application/js
 
 ------------------------------------------------------------
 
+
+Swagger
+
+https://krobl2.github.io/REST/docs/index.html#/
+
+
+------------------------------------------------------------
+
+
+
 Что дальше (следующие шаги):
 
 2. Context timeouts
